@@ -89,6 +89,10 @@ cstyle: ## run code style check on low-level C code
 
 ## code generation:
 
+mypy:
+	mypy \
+		src/protobuf.py
+
 templates: ## render Mako templates (for lists of coins, tokens, etc.)
 	./tools/build_templates
 
