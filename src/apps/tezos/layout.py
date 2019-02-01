@@ -62,6 +62,27 @@ async def require_confirm_register_delegate(ctx, address, fee):
     await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
 
+async def require_confirm_staking(ctx):
+    text = Text("Confirm staking", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.bold("Confirm?")
+    return await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
+
+
+def show_staking_signature(signature, watermark):
+    ui.display.clear()
+    text = Text("Signed", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.bold("Type: " + get_operation(watermark))
+    text.bold("Signature:")
+    text.normal(signature)
+    text.render()
+
+
+async def no_pin_dialog(ctx):
+    text = Text("Pin is not set", ui.ICON_WRONG, icon_color=ui.RED)
+    text.normal("You need to set a pin to start staking")
+    return await require_confirm(ctx, text, ButtonRequestType.Other)
+
+
 def split_address(address):
     return chunks(address, 18)
 
@@ -69,3 +90,10 @@ def split_address(address):
 def format_tezos_amount(value):
     formatted_value = format_amount(value, TEZOS_AMOUNT_DIVISIBILITY)
     return formatted_value + " XTZ"
+
+
+def get_operation(wm):
+    if wm is 1:
+        return "Block"
+    else:
+        return "Endorsement"
