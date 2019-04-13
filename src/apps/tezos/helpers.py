@@ -1,15 +1,10 @@
 from micropython import const
 
-from trezor import config
 from trezor.crypto import base58
-from trezor.pin import pin_to_int
 
 from apps.common import HARDENED
-from apps.common.request_pin import request_pin
+from apps.common import writers
 
-# TODO: move to storage?
-_TEZOS = const(0x02)  # Tezos namespace
-_BAKING = const(0x01)  # Key for staking state
 
 TEZOS_AMOUNT_DIVISIBILITY = const(6)
 TEZOS_ED25519_ADDRESS_PREFIX = "tz1"
@@ -50,7 +45,8 @@ def validate_full_path(path: list) -> bool:
     Validates derivation path to equal 44'/1729'/a',
     where `a` is an account index from 0 to 1 000 000.
     """
-    if len(path) != 3:
+    length = len(path)
+    if length < 3 or length > 4:
         return False
     if path[0] != 44 | HARDENED:
         return False
@@ -58,14 +54,13 @@ def validate_full_path(path: list) -> bool:
         return False
     if path[2] < HARDENED or path[2] > 1000000 | HARDENED:
         return False
+    if length > 3 and (path[3] < HARDENED or path[3] > 1000000 | HARDENED):
+        return False
     return True
 
 
-async def prompt_pin():
-    label = "Stop Tezos baking"
-    while True:
-        pin = await request_pin(label, cancellable=False)
-        if config.check_pin(pin_to_int(pin)):
-            break
-        else:
-            label = "Wrong PIN, enter again"
+def write_bool(w: bytearray, boolean: bool):
+    if boolean:
+        writers.write_uint8(w, 255)
+    else:
+        writers.write_uint8(w, 0)
