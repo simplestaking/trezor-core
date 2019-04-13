@@ -46,7 +46,6 @@ class TestTezosAddress(unittest.TestCase):
             [44 | HARDENED],
             [44 | HARDENED, 1729 | HARDENED],
             [44 | HARDENED, 1729 | HARDENED, 0],
-            [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED, 0 | HARDENED],
             [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED, 0 | HARDENED, 0 | HARDENED],
             [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED, 1, 0],
             [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED, 0, 0],
@@ -58,6 +57,7 @@ class TestTezosAddress(unittest.TestCase):
             [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED],
             [44 | HARDENED, 1729 | HARDENED, 3 | HARDENED],
             [44 | HARDENED, 1729 | HARDENED, 9 | HARDENED],
+            [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED, 0 | HARDENED],
         ]
 
         for path in incorrect_paths:
